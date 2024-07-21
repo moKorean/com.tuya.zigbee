@@ -1514,7 +1514,8 @@
           "_TZE200_cowvfni3",
           "_TZE200_hsgrhjpf",
           "_TZE200_68nvbio9",
-          "_TZE200_pw7mji0l"
+          "_TZE200_pw7mji0l",
+          "_TZE204_r0jdjrvi"
         ],
         "productId": [
           "TS0601"
@@ -1988,7 +1989,8 @@
           "_TZ3000_yxqnffam",
           "_TZ3000_9eeavbk5",
           "_TZ3000_yxqnffam",
-          "_TZ3000_a33rw7ou"
+          "_TZ3000_a33rw7ou",
+          "_TZ3000_6zvw8ham"
         ],
         "productId": [
           "RH3001",
@@ -3354,7 +3356,8 @@
           "_TZ3000_6ygjfyll",
           "_TZ3040_6ygjfyll",
           "_TZ3040_bb6xaihh",
-          "_TZ3000_nss8amz9"
+          "_TZ3000_nss8amz9",
+          "_TZ3210_cwamkvua"
         ],
         "productId": [
           "TS0202"
@@ -3538,7 +3541,8 @@
           "_TZE204_ztc6ggyl",
           "_TZE204_qasjif9e",
           "_TZE204_ijxvkhd0",
-          "_TZE204_sxm7l9xa"
+          "_TZE204_sxm7l9xa",
+          "_TZE200_kb5noeto"
         ],
         "productId": [
           "TS0601"
@@ -3685,7 +3689,8 @@
           "_TZ3000_hdlpifbk",
           "_TZ3000_excgg5kb",
           "_TZ3000_u3oupgdy",
-          "_TZ3000_wkr3jqmr"
+          "_TZ3000_wkr3jqmr",
+          "_TZ3000_a37eix1s"
         ],
         "productId": [
           "TS0004"
@@ -8311,7 +8316,7 @@
     {
       "id": "wall_remote_4_gang_3",
       "name": {
-        "en": "4 Gang Wall Remote"
+        "en": "4 Gang Wall Remote - Long Press"
       },
       "class": "remote",
       "platforms": [
@@ -8420,6 +8425,7 @@
           "_TZ3000_oex7egmt",
           "_TZ3000_hafsqare",
           "_TZ3000_oaq83gqc",
+          "_TZ3000_hhiodade",
           "_TZ3000_6eyydfyg"
         ],
         "productId": [
@@ -8430,6 +8436,9 @@
           "1": {
             "clusters": [
               0,
+              3,
+              4,
+              5,
               6
             ],
             "bindings": [
@@ -8440,11 +8449,40 @@
         "learnmode": {
           "image": "/drivers/wall_switch_1_gang/assets/icon.svg",
           "instruction": {
-            "en": "Press the button for 10 seconds (the LED should start blinking)."
+            "en": "Press the button for 7 seconds (until LED starts blinking)."
           }
         }
       },
-      "settings": []
+      "settings": [
+        {
+          "id": "indicator_mode",
+          "type": "radio",
+          "label": {
+            "en": "Indicator mode"
+          },
+          "value": "1",
+          "values": [
+            {
+              "id": "0",
+              "label": {
+                "en": "Light Off"
+              }
+            },
+            {
+              "id": "1",
+              "label": {
+                "en": "Light on when switch turned on."
+              }
+            },
+            {
+              "id": "2",
+              "label": {
+                "en": "Light on when the switch is turned off."
+              }
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "wall_switch_1_gang_tuya",
@@ -8999,6 +9037,189 @@
           "image": "/drivers/water_leak_sensor_tuya/assets/icon.svg",
           "instruction": {
             "en": "Push the button for aprox 10 seconds until the LED blinks rapidly. If nothing happens; put two fingers against the detectors and repeat."
+          }
+        }
+      },
+      "settings": []
+    },
+    {
+      "id": "zemismart_6gang",
+      "name": {
+        "en": "Zemismart 6gang wall switch"
+      },
+      "class": "socket",
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "zigbee"
+      ],
+      "capabilities": [
+        "onoff"
+      ],
+      "images": {
+        "large": "/drivers/zemismart_6gang/assets/images/large.png",
+        "small": "/drivers/zemismart_6gang/assets/images/small.png"
+      },
+      "energy": {
+        "approximation": {
+          "usageOn": 0,
+          "usageOff": 0
+        }
+      },
+      "zigbee": {
+        "manufacturerName": [
+          "_TZE200_9mahtqtg",
+          "_TZE200_r731zlxk",
+          "_TZE200_5zbp6j0u"
+        ],
+        "productId": [
+          "TS0601"
+        ],
+        "endpoints": {
+          "1": {
+            "clusters": [
+              0,
+              4,
+              5,
+              6
+            ],
+            "bindings": [
+              6
+            ]
+          },
+          "2": {
+            "clusters": [
+              4,
+              5,
+              6
+            ],
+            "bindings": [
+              6
+            ]
+          },
+          "3": {
+            "clusters": [
+              4,
+              5,
+              6
+            ],
+            "bindings": [
+              6
+            ]
+          },
+          "4": {
+            "clusters": [
+              4,
+              5,
+              6
+            ],
+            "bindings": [
+              6
+            ]
+          },
+          "5": {
+            "clusters": [
+              4,
+              5,
+              6
+            ],
+            "bindings": [
+              6
+            ]
+          },
+          "6": {
+            "clusters": [
+              4,
+              5,
+              6
+            ],
+            "bindings": [
+              6
+            ]
+          }
+        },
+        "devices": {
+          "secondSwitch": {
+            "class": "socket",
+            "capabilities": [
+              "onoff"
+            ],
+            "name": {
+              "en": "Zemismart 6gang"
+            },
+            "energy": {
+              "approximation": {
+                "usageOn": 0,
+                "usageOff": 0
+              }
+            }
+          },
+          "thirdSwitch": {
+            "class": "socket",
+            "capabilities": [
+              "onoff"
+            ],
+            "name": {
+              "en": "Zemismart 6gang"
+            },
+            "energy": {
+              "approximation": {
+                "usageOn": 0,
+                "usageOff": 0
+              }
+            }
+          },
+          "fourthSwitch": {
+            "class": "socket",
+            "capabilities": [
+              "onoff"
+            ],
+            "name": {
+              "en": "Zemismart 6gang"
+            },
+            "energy": {
+              "approximation": {
+                "usageOn": 0,
+                "usageOff": 0
+              }
+            }
+          },
+          "fifthSwitch": {
+            "class": "socket",
+            "capabilities": [
+              "onoff"
+            ],
+            "name": {
+              "en": "Zemismart 6gang"
+            },
+            "energy": {
+              "approximation": {
+                "usageOn": 0,
+                "usageOff": 0
+              }
+            }
+          },
+          "sixthSwitch": {
+            "class": "socket",
+            "capabilities": [
+              "onoff"
+            ],
+            "name": {
+              "en": "Zemismart 6gang"
+            },
+            "energy": {
+              "approximation": {
+                "usageOn": 0,
+                "usageOff": 0
+              }
+            }
+          }
+        },
+        "learnmode": {
+          "image": "/drivers/zemismart_6gang/assets/icon.svg",
+          "instruction": {
+            "en": "Six tiles will be created, one for each switch of the device. Press the setup button combined with 1 channel button for 10 seconds (the LED should blink blue)."
           }
         }
       },

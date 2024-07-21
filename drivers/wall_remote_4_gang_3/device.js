@@ -1,48 +1,67 @@
-'use strict';
+"use strict";
 
-const { ZigBeeDevice } = require('homey-zigbeedriver');
+const { ZigBeeDevice } = require("homey-zigbeedriver");
 // const { CLUSTER } = require('zigbee-clusters');
 
 class wall_remote_4_gang_3 extends ZigBeeDevice {
+    async onNodeInit({ zclNode }) {
+        this.printNode();
 
-    async onNodeInit({zclNode}) {
+        const node = await this.homey.zigbee.getNode(this);
+        node.handleFrame = (endpointId, clusterId, frame, meta) => {
+            if (clusterId === 6) {
+                this.log(
+                    "endpointId:",
+                    endpointId,
+                    ", clusterId:",
+                    clusterId,
+                    ", frame:",
+                    frame,
+                    ", meta:",
+                    meta
+                );
+                this.log("Frame JSON data:", frame.toJSON());
+                frame = frame.toJSON();
+                this.buttonCommandParser(endpointId, frame);
+            }
+        };
 
-      this.printNode();
-
-      const node = await this.homey.zigbee.getNode(this);
-      node.handleFrame = (endpointId, clusterId, frame, meta) => {
-        if (clusterId === 6) {
-           this.log("endpointId:", endpointId,", clusterId:", clusterId,", frame:", frame, ", meta:", meta);
-           this.log("Frame JSON data:", frame.toJSON());
-           frame = frame.toJSON();
-           this.buttonCommandParser(endpointId, frame);
-        }
-      };
-
-      this._buttonPressedTriggerDevice = this.homey.flow.getDeviceTriggerCard('wall_remote_4_gang_buttons_3')
-      .registerRunListener(async (args, state) => {
-        return (null, args.action === state.action);
-      });
-    
+        this._buttonPressedTriggerDevice = this.homey.flow
+            .getDeviceTriggerCard("wall_remote_4_gang_buttons_3")
+            .registerRunListener(async (args, state) => {
+                return null, args.action === state.action;
+            });
     }
 
     buttonCommandParser(ep, frame) {
-      var button = ep === 1 ? 'leftUp' : ep === 2 ? 'rightUp' : ep === 3 ? 'leftDown' : 'rightDown';
-      var action = frame.data[3] === 0 ? 'oneClick' : 'twoClicks';
-      return this._buttonPressedTriggerDevice.trigger(this, {}, { action: `${button}-${action}` })
-      .then(() => this.log(`Triggered 4 Gang Wall Remote, action=${button}-${action}`))
-      .catch(err => this.error('Error triggering 4 Gang Wall Remote', err));
+        var button =
+            ep === 1
+                ? "leftUp"
+                : ep === 2
+                ? "rightUp"
+                : ep === 3
+                ? "leftDown"
+                : "rightDown";
+        var action = frame.data[3] === 0 ? "oneClick" : "twoClicks";
+
+        return this._buttonPressedTriggerDevice
+            .trigger(this, {}, { action: `${button}-${action}` })
+            .then(() =>
+                this.log(
+                    `Triggered 4 Gang Wall Remote, action=${button}-${action}`
+                )
+            )
+            .catch((err) =>
+                this.error("Error triggering 4 Gang Wall Remote", err)
+            );
     }
 
-    onDeleted(){
-		this.log("4 Gang Wall Remote removed")
-	}
-
+    onDeleted() {
+        this.log("4 Gang Wall Remote removed");
+    }
 }
 
 module.exports = wall_remote_4_gang_3;
-
-
 
 /*
   "ids": {
@@ -270,6 +289,3 @@ module.exports = wall_remote_4_gang_3;
   }
 
 */
-
-
-  
