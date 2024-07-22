@@ -20,19 +20,12 @@ class zemismart_6gang extends ZigBeeDevice {
             case "thirdSwitch":
                 options.endpoint = 3;
                 break;
-            case "fourthSwitch":
-                options.endpoint = 4;
-                break;
-            case "fifthSwitch":
-                options.endpoint = 5;
-                break;
-            case "sixthSwitch":
-                options.endpoint = 6;
-                break;
             default:
                 options.endpoint = 1;
                 break;
         }
+
+        this.log("options will be added ", options);
 
         this.registerCapability("onoff", CLUSTER.ON_OFF, options);
 

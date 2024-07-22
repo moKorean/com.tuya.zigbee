@@ -18,35 +18,19 @@
         }
     },
     "zigbee": {
-        "manufacturerName": [
-            "_TZE200_9mahtqtg",
-            "_TZE200_r731zlxk",
-            "_TZE200_5zbp6j0u"
-        ],
-        "productId": ["TS0601"],
+        "manufacturerName": ["_TZ3000_empogkya"],
+        "productId": ["TS0003"],
         "endpoints": {
             "1": {
-                "clusters": [0, 4, 5, 6],
-                "bindings": [6]
+                "clusters": [0, 3, 4, 5, 6],
+                "bindings": [10, 25]
             },
             "2": {
-                "clusters": [4, 5, 6],
+                "clusters": [3, 4, 5, 6],
                 "bindings": [6]
             },
             "3": {
-                "clusters": [4, 5, 6],
-                "bindings": [6]
-            },
-            "4": {
-                "clusters": [4, 5, 6],
-                "bindings": [6]
-            },
-            "5": {
-                "clusters": [4, 5, 6],
-                "bindings": [6]
-            },
-            "6": {
-                "clusters": [4, 5, 6],
+                "clusters": [3, 4, 5, 6],
                 "bindings": [6]
             }
         },
@@ -76,51 +60,12 @@
                         "usageOff": 0
                     }
                 }
-            },
-            "fourthSwitch": {
-                "class": "socket",
-                "capabilities": ["onoff"],
-                "name": {
-                    "en": "Zemismart 6gang"
-                },
-                "energy": {
-                    "approximation": {
-                        "usageOn": 0,
-                        "usageOff": 0
-                    }
-                }
-            },
-            "fifthSwitch": {
-                "class": "socket",
-                "capabilities": ["onoff"],
-                "name": {
-                    "en": "Zemismart 6gang"
-                },
-                "energy": {
-                    "approximation": {
-                        "usageOn": 0,
-                        "usageOff": 0
-                    }
-                }
-            },
-            "sixthSwitch": {
-                "class": "socket",
-                "capabilities": ["onoff"],
-                "name": {
-                    "en": "Zemismart 6gang"
-                },
-                "energy": {
-                    "approximation": {
-                        "usageOn": 0,
-                        "usageOff": 0
-                    }
-                }
             }
         },
         "learnmode": {
             "image": "{{driverAssetsPath}}/icon.svg",
             "instruction": {
-                "en": "Six tiles will be created, one for each switch of the device. Press the setup button combined with 1 channel button for 10 seconds (the LED should blink blue)."
+                "en": "*Three* tiles will be created (need adding x2), one for each switch of the device. Press the setup button combined with 1 channel button for 10 seconds (the LED should blink blue)."
             }
         }
     }
