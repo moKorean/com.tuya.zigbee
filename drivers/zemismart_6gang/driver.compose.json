@@ -22,15 +22,15 @@
         "productId": ["TS0003"],
         "endpoints": {
             "1": {
-                "clusters": [0, 3, 4, 5, 6],
-                "bindings": [10, 25]
+                "clusters": [0, 4, 5, 6],
+                "bindings": [6]
             },
             "2": {
-                "clusters": [3, 4, 5, 6],
+                "clusters": [4, 5, 6],
                 "bindings": [6]
             },
             "3": {
-                "clusters": [3, 4, 5, 6],
+                "clusters": [4, 5, 6],
                 "bindings": [6]
             }
         },

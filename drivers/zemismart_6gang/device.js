@@ -1,8 +1,7 @@
 "use strict";
 
-const Homey = require("homey");
 const { ZigBeeDevice } = require("homey-zigbeedriver");
-const { debug, CLUSTER } = require("zigbee-clusters");
+const { CLUSTER } = require("zigbee-clusters");
 
 class zemismart_6gang extends ZigBeeDevice {
     async onNodeInit({ zclNode }) {
@@ -11,44 +10,33 @@ class zemismart_6gang extends ZigBeeDevice {
         const { subDeviceId } = this.getData();
         this.log("Device data: ", subDeviceId);
 
-        let options = {};
+        this.registerCapability("onoff", CLUSTER.ON_OFF, {
+            endpoint:
+                subDeviceId === "secondSwitch"
+                    ? 2
+                    : subDeviceId === "thirdSwitch"
+                    ? 3
+                    : 1,
+        });
 
-        switch (subDeviceId) {
-            case "secondSwitch":
-                options.endpoint = 2;
-                break;
-            case "thirdSwitch":
-                options.endpoint = 3;
-                break;
-            default:
-                options.endpoint = 1;
-                break;
+        if (!this.isSubDevice()) {
+            await zclNode.endpoints[1].clusters.basic
+                .readAttributes(
+                    "manufacturerName",
+                    "zclVersion",
+                    "appVersion",
+                    "modelId",
+                    "powerSource",
+                    "attributeReportingStatus"
+                )
+                .catch((err) => {
+                    this.error("Error when reading device attributes ", err);
+                });
         }
-
-        this.log("options will be added ", options);
-
-        this.registerCapability("onoff", CLUSTER.ON_OFF, options);
-
-        await zclNode.endpoints[1].clusters.basic
-            .readAttributes(
-                "manufacturerName",
-                "zclVersion",
-                "appVersion",
-                "modelId",
-                "powerSource",
-                "attributeReportingStatus"
-            )
-            .catch((err) => {
-                this.error("Error when reading device attributes ", err);
-            });
     }
 
     onDeleted() {
-        this.log(
-            "Zemismart 6gang wall switch, channel ",
-            subDeviceId,
-            " removed"
-        );
+        this.log("Zemismart 6gang, channel ", subDeviceId, " removed");
     }
 }
 
