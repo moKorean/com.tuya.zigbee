@@ -1,0 +1,19 @@
+{
+  "actions": [
+    {
+      "id": "toggle_curtain",
+      "title": {
+        "en": "Toggle curtain",
+        "ko": "커튼 토글"
+      },
+      "titleFormatted": {
+        "en": "Toggle curtain",
+        "ko": "커튼 토글"
+      },
+      "hint": {
+        "en": "Toggle curtain open/close. If moving, stops the curtain. If stopped, moves to opposite direction.",
+        "ko": "커튼을 토글합니다. 움직이고 있으면 정지하고, 정지상태면 반대방향으로 이동합니다."
+      }
+    }
+  ]
+}

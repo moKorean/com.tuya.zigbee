@@ -5,7 +5,9 @@
       "WebFetch(domain:apps.developer.homey.app)",
       "WebSearch",
       "Bash(homey:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Read(//Users/mokorean/Documents/GitHub/com.lomohome.sihas/drivers/peoplecounterv2/**)",
+      "WebFetch(domain:www.zigbee2mqtt.io)"
     ],
     "deny": [],
     "ask": []
