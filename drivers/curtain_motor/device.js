@@ -154,6 +154,15 @@ class CurtainMotor extends TuyaSpecificClusterDevice {
         await args.device.toggle();
       });
 
+    // 커튼 포지션 확인 Condition 카드
+    this.homey.flow
+      .getConditionCard("get_curtain_position")
+      .registerRunListener(async (args, state) => {
+        const currentPosition = args.device.getCapabilityValue("windowcoverings_set");
+        this.log(`[${args.device.getName()}] condition 'get_curtain_position' current position: ${currentPosition}`);
+        return currentPosition;
+      });
+
   }
 
   async setPosition(pos) {
