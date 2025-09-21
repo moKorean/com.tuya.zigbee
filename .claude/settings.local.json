@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(homey app:*)"
+      "Bash(homey app:*)",
+      "WebFetch(domain:apps.developer.homey.app)",
+      "WebSearch",
+      "Bash(homey:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
