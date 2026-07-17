@@ -7,12 +7,17 @@ const TuyaSpecificClusterDevice = require('../../lib/TuyaSpecificClusterDevice')
 Cluster.addCluster(TuyaSpecificCluster);
 
 const dataPoints = {
-  control: 1,      // Control commands (0=stop?, 1=open?, 2=close?, 3=stop?)
-  position: 2,
-  arrived: 3,
+  control: 1,      // TUYA_DP_ID_CONTROL: enum (0=OPEN, 1=STOP, 2=CLOSE)
+  position: 2,     // TUYA_DP_ID_PERCENT_CONTROL: value (0-100% control)
+  state: 3,        // TUYA_DP_ID_PERCENT_STATE: value (current position state)
   motorReverse: 4,
   motorSpeed: 5,
 }
+
+// Tuya standard control values
+const TUYA_CONTROL_OPEN = 0;
+const TUYA_CONTROL_STOP = 1;
+const TUYA_CONTROL_CLOSE = 2;
 
 const dataTypes = {
   raw: 0, // [ bytes ]
@@ -212,23 +217,23 @@ class CurtainMotor extends TuyaSpecificClusterDevice {
           this.log(`[TOGGLE] [UPDATE_POSITION] Position moving state - current: ${currentPos}, target: ${this.targetPosition} (waiting for arrived signal)`);
         }
         break;
-      case dataPoints.arrived:
-        // For arrived, the value seems to be the actual position (0-100 range)
-        const arrivalPosition = reverse ? (100 - (value & 0xFF)) / 100 : (value & 0xFF) / 100;
+      case dataPoints.state:
+        // DP3: Current position state (TUYA_DP_ID_PERCENT_STATE)
+        const currentState = reverse ? (100 - (value & 0xFF)) / 100 : (value & 0xFF) / 100;
 
-        this.log(`[TOGGLE] [UPDATE_POSITION] Arrived - raw value: ${value}, calculated position: ${arrivalPosition}`);
+        this.log(`[TOGGLE] [UPDATE_POSITION] State update - raw value: ${value}, calculated position: ${currentState}`);
 
-        // Always update the position when arrived signal is received
-        this.setCapabilityValue('windowcoverings_set', arrivalPosition).catch(this.error);
-        this.lastKnownPosition = arrivalPosition;
+        // Always update the position when state signal is received
+        this.setCapabilityValue('windowcoverings_set', currentState).catch(this.error);
+        this.lastKnownPosition = currentState;
 
-        // Always reset to idle when we get an arrived signal - this means movement stopped
+        // Reset to idle when we get a state update that indicates movement stopped
         if (this.toggleState === 'moving' || this.toggleState === 'stopping') {
-          this.log(`[TOGGLE] [UPDATE_POSITION] Movement completed at position ${arrivalPosition} - setting state to idle`);
+          this.log(`[TOGGLE] [UPDATE_POSITION] Movement completed at position ${currentState} - setting state to idle`);
           this.toggleState = 'idle';
           this.targetPosition = null;
         } else {
-          this.log(`[TOGGLE] [UPDATE_POSITION] Position update - current position: ${arrivalPosition}, state: ${this.toggleState}`);
+          this.log(`[TOGGLE] [UPDATE_POSITION] Position update - current position: ${currentState}, state: ${this.toggleState}`);
         }
         break;
       case dataPoints.motorReverse:
@@ -288,6 +293,16 @@ class CurtainMotor extends TuyaSpecificClusterDevice {
         this.log(`[TOGGLE] 닫는 방향 중 토글 - 열기 동작으로 전환`);
         this.toggleState = 'moving';
         this.targetPosition = 1.0;
+
+        // 표준 OPEN 명령도 함께 시도
+        try {
+          await this.writeData32(dataPoints.control, TUYA_CONTROL_OPEN);
+          this.log(`[TOGGLE] control=${TUYA_CONTROL_OPEN} (표준 열기) 명령 전송`);
+        } catch (error) {
+          this.log(`[TOGGLE] 표준 열기 명령 실패:`, error);
+        }
+
+        // 기존 position 방식도 함께 사용
         await this.setPosition(1.0);
         this.log(`[TOGGLE] 열기 동작으로 전환 완료`);
         return;
@@ -297,10 +312,10 @@ class CurtainMotor extends TuyaSpecificClusterDevice {
         this.log(`[TOGGLE] 열리는 방향 - 정지 명령 시도`);
 
         try {
-          await this.writeData32(dataPoints.control, 1);
-          this.log(`[TOGGLE] control=1 (정지) 전송`);
+          await this.writeData32(dataPoints.control, TUYA_CONTROL_STOP);
+          this.log(`[TOGGLE] control=${TUYA_CONTROL_STOP} (표준 정지) 전송`);
         } catch (error) {
-          this.log(`[TOGGLE] control=1 실패:`, error);
+          this.log(`[TOGGLE] 표준 정지 명령 실패:`, error);
         }
 
         // 2초 후 상태를 idle로 초기화
@@ -309,7 +324,7 @@ class CurtainMotor extends TuyaSpecificClusterDevice {
             this.log(`[TOGGLE] 열림 정지 완료 - 상태 초기화`);
             this.toggleState = 'idle';
           }
-        }, 2000);
+        }, 1000);
 
         this.log(`[TOGGLE] 열림 정지 명령 전송 완료`);
         return;
@@ -329,10 +344,30 @@ class CurtainMotor extends TuyaSpecificClusterDevice {
       if (currentPosition >= 0.5) {
         this.log(`[TOGGLE] Position ${currentPosition} >= 0.5 - closing curtain (moving to 0.0)`);
         this.targetPosition = 0.0;
+
+        // 표준 CLOSE 명령 시도
+        try {
+          await this.writeData32(dataPoints.control, TUYA_CONTROL_CLOSE);
+          this.log(`[TOGGLE] control=${TUYA_CONTROL_CLOSE} (표준 닫기) 명령 전송`);
+        } catch (error) {
+          this.log(`[TOGGLE] 표준 닫기 명령 실패:`, error);
+        }
+
+        // 기존 position 방식도 함께 사용
         await this.setPosition(0.0);
       } else {
         this.log(`[TOGGLE] Position ${currentPosition} < 0.5 - opening curtain (moving to 1.0)`);
         this.targetPosition = 1.0;
+
+        // 표준 OPEN 명령 시도
+        try {
+          await this.writeData32(dataPoints.control, TUYA_CONTROL_OPEN);
+          this.log(`[TOGGLE] control=${TUYA_CONTROL_OPEN} (표준 열기) 명령 전송`);
+        } catch (error) {
+          this.log(`[TOGGLE] 표준 열기 명령 실패:`, error);
+        }
+
+        // 기존 position 방식도 함께 사용
         await this.setPosition(1.0);
       }
 
@@ -353,13 +388,13 @@ class CurtainMotor extends TuyaSpecificClusterDevice {
 
 module.exports = CurtainMotor;
 
-// Cluster 61184 is a custom cluster that is used to control the curtain motor.
-// The device has 5 datapoints.
-// 1: position of the curtain. 32 bit integer, but only the first byte is used. The value is between 0 and 100. 0 is closed, 100 is open.
-// 2: position (0-100). 32 bit integer, but only the first byte is used. The value is between 0 and 100. 0 is closed, 100 is open.
-// 3: arrived (0/1). Boolean. 0 is false, 1 is true.
-// 4: motor reverse (0/1). Boolean. 0 is false, 1 is true.
-// 5: motor speed (0-100). 32 bit integer, but only the first byte is used. The value is between 0 and 100. 0 is slow, 100 is fast.
+// Tuya Zigbee Curtain Motor - Using Standard Datapoints
+// Follows Tuya standard protocol for curtain control
+// DP1 (control): enum (0=OPEN, 1=STOP, 2=CLOSE) - Tuya standard control commands
+// DP2 (position): value (0-100%) - Position control for percentage-based movement
+// DP3 (state): value (current position state) - Real-time position feedback
+// DP4 (motorReverse): boolean (0=normal, 1=reversed) - Motor direction configuration
+// DP5 (motorSpeed): value (0-100) - Motor speed control
 
 
 // {

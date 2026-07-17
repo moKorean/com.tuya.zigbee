@@ -1,13 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(homey app:*)",
-      "WebFetch(domain:apps.developer.homey.app)",
-      "WebSearch",
-      "Bash(homey:*)",
-      "Bash(find:*)",
-      "Read(//Users/mokorean/Documents/GitHub/com.lomohome.sihas/drivers/peoplecounterv2/**)",
-      "WebFetch(domain:www.zigbee2mqtt.io)"
+      "Bash(file:*)",
+      "WebFetch(domain:pixabay.com)",
+      "Bash(brew list:*)",
+      "Bash(rsvg-convert:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(git fetch *)",
+      "Bash(git diff *)",
+      "Bash(set -e)",
+      "Bash(git branch *)",
+      "Bash(git stash *)",
+      "Bash(git checkout *)"
     ],
     "deny": [],
     "ask": []
